@@ -1,3 +1,4 @@
 const authenticate = require('./auth');
+const todo = require('./todo');
 
-module.exports = {authenticate};
+module.exports = {authenticate, todo};
