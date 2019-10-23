@@ -1,47 +1,83 @@
+const controllers = require('../controllers');
+
 const getAll = (request, response) => {
-    return response.status(200).json({
-        data: ['mi lista']
+    controllers.todoListController.findAll().then(todoLists => {
+        return response.status(200).json(todoLists);
+    }).catch(error => {
+        return response.status(500).json({
+            code: 500,
+            message: 'We are fixing this problem, try later.'
+        });
     });
 };
 
 const createTodo = (request, response) => {
     const todo = request.body;
 
-    return response.status(200).json({
-        code: 1001,
-        message: 'Todo List created'
+    controllers.todoListController.createTodoList(todo).then(() => {
+        return response.status(200).json({
+            code: 1001,
+            message: 'Todo List created'
+        });
+    }).catch(error => {
+        return response.status(500).json({
+            code: 500,
+            message: 'We are fixing this problem, try later.'
+        });
     });
+
+    
 };
 
-const createTask = (request, response) => {
-    const todoId = request.query.todoId;
-    const todo = _findTODObyId(todoId);
+const createTask = async (request, response) => {
+    const todoId = request.params.todoId;
+    const todo = await controllers.todoListController.findTodoList(todoId);
     const task = request.body.task;
     todo.tasks = [...todo.tasks, task];
-    _saveTODOList(todo);
-
-    return response.status(200).json({
-        code: 2001,
-        message: 'A task was created'
-    });
-
+    controllers
+        .todoListController
+        .updateTodoList(todo)
+        .then(() => {
+            return response.status(200).json({
+                code: 2001,
+                message: 'A task was created',
+                data: todo
+            });
+        })
+        .catch(error => {
+            return response.status(500).json({
+                code: 500,
+                message: 'We are fixing this problem, try later.'
+            });
+        });
 };
 
-const doTask = (request, response) => {
-    const todoId = request.query.todoId;
-    const taskId = request.query.taskId;
+const doTask = async (request, response) => {
+    const todoId = request.params.todoId;
+    const taskId = request.params.taskId;
     const checked = request.body.checked;
 
-    let todo = _findTODObyId(todoId);
-    const task = _findTaskbyId(todo, taskId);
-    task.checked = checked;
-    todo = _saveTask(todo, task);
-    _saveTODOList(todo);
-
-    return response.status(200).json({
-        code: 2003,
-        message: 'A task was checked'
+    let todo = await controllers.todoListController.findTodoList(todoId);
+    todo.tasks = todo.tasks.map(task => {
+        if(task._id == taskId) task.is_done = checked;
+        return task;
     });
+
+    controllers
+        .todoListController
+        .updateTodoList(todo)
+        .then(() => {
+            return response.status(200).json({
+                code: 2003,
+                message: 'A task was checked/unchecked'
+            });
+        })
+        .catch(error => {
+            return response.status(500).json({
+                code: 500,
+                message: 'We are fixing this problem, try later.'
+            });
+        });
 };
 
 const deleteTodo = (request, response) => {
@@ -77,10 +113,6 @@ const _findTODObyId = (todoId) => {
     };
 };
 
-const _saveTODOList = (todo) => {
-    return true;
-};
-
 const _findTaskbyId = (todo, taskId) => {
     return {
         description: '',
@@ -88,16 +120,5 @@ const _findTaskbyId = (todo, taskId) => {
     };
 };
 
-const _saveTask = (todo, task) => {
-    return todo;
-};
-
-const _deleteTODOListById = (todoId) => {
-    return true;
-};
-
-const _deleteTask = (todo, task) => {
-    return true;
-};
 
 module.exports = {getAll, createTodo, createTask, doTask, deleteTodo, deleteTask};

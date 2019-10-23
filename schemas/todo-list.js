@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
 
 const todoSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  name: {
-    type: String,
-    required: [true, 'Username is required']
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    auto: true,
   },
-  description: {
-    type: String,
-    required: [true, 'A brief description is required']
-  },
+  name: String,
+  description: String,
   tasks: [
     {
         title: String,
