@@ -6,12 +6,8 @@
   "scripts": {
     "start": "node index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alfonsorios96/backend-todo.git"
-  },
   "engines": {
-    "node": "8.11.1"
+    "node": "^12.0.0"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -26,10 +22,6 @@
   ],
   "author": "Alfonso Rios <malforime@gmail.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/alfonsorios96/backend-todo/issues"
-  },
-  "homepage": "https://github.com/alfonsorios96/backend-todo#readme",
   "devDependencies": {
     "dotenv": "^8.2.0"
   }
