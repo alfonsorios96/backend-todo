@@ -23,11 +23,35 @@ const catalogRoute = express.Router();
 catalogRoute.use(middlewares.authenticate.authorize);
 
 catalogRoute.get('/', (request, response) => {
-    response.status(200).json({
+    response.status(200).json([{
         uid: 'eg721ge71ge7121',
         name: 'guts-component',
-        url: `${process.env.DOMAIN}/catalog/guts-component.js`
-    });
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/SubtractiveColorMixing.png/200px-SubtractiveColorMixing.png',
+        url: `${process.env.DOMAIN}/catalog/guts-component.min.js`
+    },
+        {
+            uid: 'toto',
+            name: 'toto-component',
+            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/SubtractiveColorMixing.png/200px-SubtractiveColorMixing.png',
+            url: `${process.env.DOMAIN}/catalog/toto-component.min.js`
+        }]);
+});
+
+catalogRoute.get('/:appId', (request, response) => {
+    const appId = request.params.appId;
+    response.status(200).json([
+        {
+            uid: 'eg721ge71ge7121',
+            name: 'guts-component',
+            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/SubtractiveColorMixing.png/200px-SubtractiveColorMixing.png',
+            url: `${process.env.DOMAIN}/catalog/guts-component.min.js`
+        },
+        {
+            uid: 'toto',
+            name: 'toto-component',
+            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/SubtractiveColorMixing.png/200px-SubtractiveColorMixing.png',
+            url: `${process.env.DOMAIN}/catalog/toto-component.min.js`
+        }].filter(app => app.uid === appId).pop());
 });
 
 catalogRoute.use('/cdn', express.static(path.join(__dirname, 'components')));
